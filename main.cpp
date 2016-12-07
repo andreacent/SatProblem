@@ -8,23 +8,25 @@
 using namespace std;
 
 void createVariables(int n, int m){
-    int cuadro[n*m][4]; //variables de cada recuadro
+    int cuadro[n][m][4]; //variables de cada recuadro
     int cuadro_i = 0;   //index del array cuadro
     int aux = 1;        //auxiliar para numerar variables
 
+    cout << "\n(i,j) = Variables" << endl;
     while(cuadro_i < n*m){
         for(int i=0; i<n ; i++){
-            cuadro[cuadro_i][0] = aux;          //superior
-            cuadro[cuadro_i][1] = n+aux;        //izquierdo
-            cuadro[cuadro_i][2] = n+1+aux;      //derecho
-            cuadro[cuadro_i][3] = n+m+1+aux;    //inferior
+            for(int j=0; j<m ; j++){
+                cuadro[i][j][0] = aux;          //superior
+                cuadro[i][j][1] = n+aux;        //izquierdo
+                cuadro[i][j][2] = n+1+aux;      //derecho
+                cuadro[i][j][3] = n+m+1+aux;    //inferior
 
-            printf("cuadro %d = { %d,%d,%d,%d }\n",cuadro_i+1,cuadro[cuadro_i][0],cuadro[cuadro_i][1],cuadro[cuadro_i][2],cuadro[cuadro_i][3]);
-
-            cuadro_i++;
-            aux++;
-        }
-        aux += m+1; //paso a siguiente fila 
+                printf("(%d,%d) = { %d,%d,%d,%d }\n",i,j,cuadro[i][j][0],cuadro[i][j][1],cuadro[i][j][2],cuadro[i][j][3]);
+                aux++;
+                cuadro_i++;
+            }
+            aux += m+1; //paso a siguiente fila
+        } 
     }
 }
 
