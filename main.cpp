@@ -37,7 +37,7 @@ void createVariables(int n, int m){
     char r;
     string f;
     for(int i=0; i<n; i++){
-        for (unsigned j=0; (int)j<m; j++){
+        for (int j=0; j<m; j++){
             r = restricciones[i].at(j);
             //printf("----\nc(%d,%d) %c\n",i,j,r);
             switch(r){
@@ -46,44 +46,90 @@ void createVariables(int n, int m){
                 case '0':
                     printf("----\nc(%d,%d) %c\n",i,j,r);
                     for(int k=0; k<4;k++){                        
-                        clausulas.push_back("-"+to_string(c[i][j][k]));
+                        clausulas.push_back("-"+to_string(c[i][j][k])+" 0");
                         printf("-%d\n",c[i][j][k]);
                     }
                     break; 
                 case '1':
                     f="";
                     for(int k=0; k<4;k++) f += to_string(c[i][j][k]) +" ";
+                    f=f+"0";
                     clausulas.push_back(f);
-                    clausulas.push_back("-"+to_string(c[i][j][0])+" -"+to_string(c[i][j][1]));
-                    clausulas.push_back("-"+to_string(c[i][j][0])+" -"+to_string(c[i][j][2]));
-                    clausulas.push_back("-"+to_string(c[i][j][0])+" -"+to_string(c[i][j][3]));
-                    clausulas.push_back("-"+to_string(c[i][j][1])+" -"+to_string(c[i][j][2]));
-                    clausulas.push_back("-"+to_string(c[i][j][1])+" -"+to_string(c[i][j][3]));
-                    clausulas.push_back("-"+to_string(c[i][j][2])+" -"+to_string(c[i][j][3]));
+                    clausulas.push_back("-"+to_string(c[i][j][0])+" -"+to_string(c[i][j][1])+" 0");
+                    clausulas.push_back("-"+to_string(c[i][j][0])+" -"+to_string(c[i][j][2])+" 0");
+                    clausulas.push_back("-"+to_string(c[i][j][0])+" -"+to_string(c[i][j][3])+" 0");
+                    clausulas.push_back("-"+to_string(c[i][j][1])+" -"+to_string(c[i][j][2])+" 0");
+                    clausulas.push_back("-"+to_string(c[i][j][1])+" -"+to_string(c[i][j][3])+" 0");
+                    clausulas.push_back("-"+to_string(c[i][j][2])+" -"+to_string(c[i][j][3])+" 0");
 
                     printf("----\nc(%d,%d) %c\n",i,j,r);
                     cout << f << endl;
-                    printf("-%d -%d\n",c[i][j][0],c[i][j][1]);
-                    printf("-%d -%d\n",c[i][j][0],c[i][j][2]);
-                    printf("-%d -%d\n",c[i][j][0],c[i][j][3]);
-                    printf("-%d -%d\n",c[i][j][1],c[i][j][2]);
-                    printf("-%d -%d\n",c[i][j][1],c[i][j][3]);
-                    printf("-%d -%d\n",c[i][j][2],c[i][j][3]);
+                    //printf("-%d -%d\n",c[i][j][0],c[i][j][1]);
+                    //printf("-%d -%d\n",c[i][j][0],c[i][j][2]);
+                    //printf("-%d -%d\n",c[i][j][0],c[i][j][3]);
+                    //printf("-%d -%d\n",c[i][j][1],c[i][j][2]);
+                    //printf("-%d -%d\n",c[i][j][1],c[i][j][3]);
+                    //printf("-%d -%d\n",c[i][j][2],c[i][j][3]);
                     break; 
                 case '2':
+                    f="";
+                    for(int k=0; k<4;k++) f += to_string(c[i][j][k]) +" ";
+                    f=f+"0";
+                    clausulas.push_back(f);
+                    clausulas.push_back("-"+to_string(c[i][j][0])+" -"+to_string(c[i][j][1])+" -"+to_string(c[i][j][2])+" 0");
+                    clausulas.push_back("-"+to_string(c[i][j][0])+" -"+to_string(c[i][j][1])+" -"+to_string(c[i][j][3])+" 0");
+                    clausulas.push_back("-"+to_string(c[i][j][0])+" -"+to_string(c[i][j][2])+" -"+to_string(c[i][j][3])+" 0");
+                    clausulas.push_back("-"+to_string(c[i][j][1])+" -"+to_string(c[i][j][2])+" -"+to_string(c[i][j][3])+" 0");
+
+                    printf("----\nc(%d,%d) %c\n",i,j,r);
+                    cout << f << endl;
+                    //printf("-%d -%d -%d\n",c[i][j][0],c[i][j][1],c[i][j][2]);
+                    //printf("-%d -%d -%d\n",c[i][j][0],c[i][j][1],c[i][j][3]);
+                    //printf("-%d -%d -%d\n",c[i][j][0],c[i][j][2],c[i][j][3]);
+                    //printf("-%d -%d -%d\n",c[i][j][1],c[i][j][2],c[i][j][3]);
                     break; 
                 case '3':
-                    break; 
+                    f="";
+                    for(int k=0; k<4;k++) f += to_string(c[i][j][k]) +" ";
+                    f=f+"0";
+                    clausulas.push_back(f);
+                    f="";
+                    for(int k=0; k<4;k++) f += "-"+to_string(c[i][j][k]) +" ";
+                    f=f+"0";
+                    clausulas.push_back(f);
+                    printf("----\nc(%d,%d) %c\n",i,j,r);
+                    cout << f << endl;
+                    //printf("-%d -%d -%d -%d\n",c[i][j][0],c[i][j][1],c[i][j][2],c[i][j][3]);
+                    break;
+                case '4':
+                    printf("----\nc(%d,%d) %c\n",i,j,r);
+                    for(int k=0; k<4;k++){                        
+                        clausulas.push_back(to_string(c[i][j][k])+" 0");
+                        printf("%d\n",c[i][j][k]);
+                    }
+                    break;
             }
         }
     }
 }
 
+void createDimacsFile(int n, int m) {
+
+    ofstream archivo;
+    archivo.open("tmp.txt");
+    archivo << "p cnf " << (n+1)*n+(m+1)*m << " " << clausulas.size() <<"\n";
+    for (unsigned i = 0; i < clausulas.size(); ++i) {
+        archivo << clausulas[i] << "\n";
+    }
+    archivo.close();
+}
+
 int main(int argc, char const *argv[]) {
 
     int n,m; // n-filas,m-columnas
-
+    
     ifstream infile("example_input.txt");
+    //ifstream infile(argv[1]);  //Lectura pasada a traves de stdin
     string line;
     while (getline(infile, line)) {
         istringstream ss(line);
@@ -104,6 +150,9 @@ int main(int argc, char const *argv[]) {
         }
 
         createVariables(n,m);
+
+        createDimacsFile(n,m);
+
 
         // IMPRIMIR CNF
         //int num_vars = (n+1)*n+(m+1)*m;
