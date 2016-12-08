@@ -35,7 +35,7 @@ void createVariables(int n, int m){
 
     cout << "\nFormulas (Cláusulas tipo 0)" << endl;
     char r;
-    string f;
+    string f,h;
     for(int i=0; i<n; i++){
         for (int j=0; j<m; j++){
             r = restricciones[i].at(j);
@@ -72,14 +72,23 @@ void createVariables(int n, int m){
                     //printf("-%d -%d\n",c[i][j][2],c[i][j][3]);
                     break; 
                 case '2':
+                    // Clausula 'base'
                     f="";
                     for(int k=0; k<4;k++) f += to_string(c[i][j][k]) +" ";
                     f=f+"0";
                     clausulas.push_back(f);
+
+                    // Clausulas 'no mas de dos'
                     clausulas.push_back("-"+to_string(c[i][j][0])+" -"+to_string(c[i][j][1])+" -"+to_string(c[i][j][2])+" 0");
                     clausulas.push_back("-"+to_string(c[i][j][0])+" -"+to_string(c[i][j][1])+" -"+to_string(c[i][j][3])+" 0");
                     clausulas.push_back("-"+to_string(c[i][j][0])+" -"+to_string(c[i][j][2])+" -"+to_string(c[i][j][3])+" 0");
                     clausulas.push_back("-"+to_string(c[i][j][1])+" -"+to_string(c[i][j][2])+" -"+to_string(c[i][j][3])+" 0");
+
+                    // Clausulas 'mas de uno' *Creo que esto va*
+                    clausulas.push_back(to_string(c[i][j][0])+" "+to_string(c[i][j][1])+" "+to_string(c[i][j][2])+" 0");
+                    clausulas.push_back(to_string(c[i][j][0])+" "+to_string(c[i][j][1])+" "+to_string(c[i][j][3])+" 0");
+                    clausulas.push_back(to_string(c[i][j][0])+" "+to_string(c[i][j][2])+" "+to_string(c[i][j][3])+" 0");
+                    clausulas.push_back(to_string(c[i][j][1])+" "+to_string(c[i][j][2])+" "+to_string(c[i][j][3])+" 0");
 
                     printf("----\nc(%d,%d) %c\n",i,j,r);
                     cout << f << endl;
@@ -89,16 +98,28 @@ void createVariables(int n, int m){
                     //printf("-%d -%d -%d\n",c[i][j][1],c[i][j][2],c[i][j][3]);
                     break; 
                 case '3':
+                    // Clausula 'base'
                     f="";
                     for(int k=0; k<4;k++) f += to_string(c[i][j][k]) +" ";
                     f=f+"0";
                     clausulas.push_back(f);
-                    f="";
-                    for(int k=0; k<4;k++) f += "-"+to_string(c[i][j][k]) +" ";
-                    f=f+"0";
-                    clausulas.push_back(f);
+
+                    // Clausula 'no mas de 3'
+                    h="";
+                    for(int k=0; k<4;k++) h += "-"+to_string(c[i][j][k]) +" ";
+                    h=h+"0";
+                    clausulas.push_back(h);
+
+                    // Clausulas 'mas de dos' *Creo que esto va*
+                    clausulas.push_back(to_string(c[i][j][0])+" "+to_string(c[i][j][1])+" 0");
+                    clausulas.push_back(to_string(c[i][j][0])+" "+to_string(c[i][j][2])+" 0");
+                    clausulas.push_back(to_string(c[i][j][0])+" "+to_string(c[i][j][3])+" 0");
+                    clausulas.push_back(to_string(c[i][j][1])+" "+to_string(c[i][j][2])+" 0");
+                    clausulas.push_back(to_string(c[i][j][1])+" "+to_string(c[i][j][3])+" 0");
+                    clausulas.push_back(to_string(c[i][j][2])+" "+to_string(c[i][j][3])+" 0");
                     printf("----\nc(%d,%d) %c\n",i,j,r);
                     cout << f << endl;
+                    cout << h << endl;
                     //printf("-%d -%d -%d -%d\n",c[i][j][0],c[i][j][1],c[i][j][2],c[i][j][3]);
                     break;
                 case '4':
@@ -116,7 +137,7 @@ void createVariables(int n, int m){
 void createDimacsFile(int n, int m) {
 
     ofstream archivo;
-    archivo.open("tmp.txt");
+    archivo.open("entrada.txt");
     archivo << "p cnf " << (n+1)*n+(m+1)*m << " " << clausulas.size() <<"\n";
     for (unsigned i = 0; i < clausulas.size(); ++i) {
         archivo << clausulas[i] << "\n";
@@ -127,6 +148,7 @@ void createDimacsFile(int n, int m) {
 int main(int argc, char const *argv[]) {
 
     int n,m; // n-filas,m-columnas
+    //std::pair<float,int> respuesta;
     
     ifstream infile("example_input.txt");
     //ifstream infile(argv[1]);  //Lectura pasada a traves de stdin
@@ -153,6 +175,18 @@ int main(int argc, char const *argv[]) {
 
         createDimacsFile(n,m);
 
+        int status=system("minisat entrada.txt salida.txt > /dev/null");
+        string tmp;
+        if (status) {
+            ifstream infile("salida.txt");
+            string traduccion;
+            while(getline(infile, traduccion)){
+                 istringstream ss(traduccion);
+                if (ss == "SAT") {
+                    getline(ss,tmp);   
+                }                
+            }
+        }
 
         // IMPRIMIR CNF
         //int num_vars = (n+1)*n+(m+1)*m;
