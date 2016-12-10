@@ -12,7 +12,7 @@ vector<string> solucion;
 
 void createVariables(int n, int m){
     int c[n][m][4]; //variables de cada recuadro
-    bool z[n][m];   //celda interior=FALSE, celda exterior=TRUE
+    char z[n][m];   //celda interior=FALSE, celda exterior=TRUE
     int aux = 1;    //auxiliar para numerar variables
     cout << "\nc(i,j), Variables, ¿celda exterior?" << endl;
     while(n+m+1+aux < n*m){
@@ -33,21 +33,19 @@ void createVariables(int n, int m){
         } 
     }
 
-    cout << "\nFormulas (Cláusulas tipo 1)" << endl;
+    cout << "\nCLAUSULAS TIPO 1" << endl;
     char r;
     string f,h;
     for(int i=0; i<n; i++){
         for (int j=0; j<m; j++){
             r = restricciones[i].at(j);
-            //printf("----\nc(%d,%d) %c\n",i,j,r);
             switch(r){
                 case '.':
                     break; 
                 case '0':
-                    printf("----\nc(%d,%d) %c\n",i,j,r);
                     for(int k=0; k<4;k++){                        
                         clausulas.push_back("-"+to_string(c[i][j][k])+" 0");
-                        printf("-%d\n",c[i][j][k]);
+                        //printf("-%d\n",c[i][j][k]);
                     }
                     break; 
                 case '1':
@@ -62,14 +60,17 @@ void createVariables(int n, int m){
                     clausulas.push_back("-"+to_string(c[i][j][1])+" -"+to_string(c[i][j][3])+" 0");
                     clausulas.push_back("-"+to_string(c[i][j][2])+" -"+to_string(c[i][j][3])+" 0");
 
+                    /*
                     printf("----\nc(%d,%d) %c\n",i,j,r);
                     cout << f << endl;
-                    //printf("-%d -%d\n",c[i][j][0],c[i][j][1]);
-                    //printf("-%d -%d\n",c[i][j][0],c[i][j][2]);
-                    //printf("-%d -%d\n",c[i][j][0],c[i][j][3]);
-                    //printf("-%d -%d\n",c[i][j][1],c[i][j][2]);
-                    //printf("-%d -%d\n",c[i][j][1],c[i][j][3]);
-                    //printf("-%d -%d\n",c[i][j][2],c[i][j][3]);
+                    printf("-%d -%d\n",c[i][j][0],c[i][j][1]);
+                    printf("-%d -%d\n",c[i][j][0],c[i][j][2]);
+                    printf("-%d -%d\n",c[i][j][0],c[i][j][3]);
+                    printf("-%d -%d\n",c[i][j][1],c[i][j][2]);
+                    printf("-%d -%d\n",c[i][j][1],c[i][j][3]);
+                    printf("-%d -%d\n",c[i][j][2],c[i][j][3]);
+                    */
+
                     break; 
                 case '2':
                     // Clausula 'base'
@@ -90,12 +91,20 @@ void createVariables(int n, int m){
                     clausulas.push_back(to_string(c[i][j][0])+" "+to_string(c[i][j][2])+" "+to_string(c[i][j][3])+" 0");
                     clausulas.push_back(to_string(c[i][j][1])+" "+to_string(c[i][j][2])+" "+to_string(c[i][j][3])+" 0");
 
+
+                    /*
                     printf("----\nc(%d,%d) %c\n",i,j,r);
                     cout << f << endl;
-                    //printf("-%d -%d -%d\n",c[i][j][0],c[i][j][1],c[i][j][2]);
-                    //printf("-%d -%d -%d\n",c[i][j][0],c[i][j][1],c[i][j][3]);
-                    //printf("-%d -%d -%d\n",c[i][j][0],c[i][j][2],c[i][j][3]);
-                    //printf("-%d -%d -%d\n",c[i][j][1],c[i][j][2],c[i][j][3]);
+                    printf("-%d -%d -%d\n",c[i][j][0],c[i][j][1],c[i][j][2]);
+                    printf("-%d -%d -%d\n",c[i][j][0],c[i][j][1],c[i][j][3]);
+                    printf("-%d -%d -%d\n",c[i][j][0],c[i][j][2],c[i][j][3]);
+                    printf("-%d -%d -%d\n",c[i][j][1],c[i][j][2],c[i][j][3]);
+                    printf("%d %d %d\n",c[i][j][0],c[i][j][1],c[i][j][2]);
+                    printf("%d %d %d\n",c[i][j][0],c[i][j][1],c[i][j][3]);
+                    printf("%d %d %d\n",c[i][j][0],c[i][j][2],c[i][j][3]);
+                    printf("%d %d %d\n",c[i][j][1],c[i][j][2],c[i][j][3]);
+                    */
+
                     break; 
                 case '3':
                     // Clausula 'base'
@@ -117,13 +126,23 @@ void createVariables(int n, int m){
                     clausulas.push_back(to_string(c[i][j][1])+" "+to_string(c[i][j][2])+" 0");
                     clausulas.push_back(to_string(c[i][j][1])+" "+to_string(c[i][j][3])+" 0");
                     clausulas.push_back(to_string(c[i][j][2])+" "+to_string(c[i][j][3])+" 0");
+
+                    /*
                     printf("----\nc(%d,%d) %c\n",i,j,r);
                     cout << f << endl;
                     cout << h << endl;
-                    //printf("-%d -%d -%d -%d\n",c[i][j][0],c[i][j][1],c[i][j][2],c[i][j][3]);
+                    printf("%d %d\n",c[i][j][0],c[i][j][1]);
+                    printf("%d %d\n",c[i][j][0],c[i][j][2]);
+                    printf("%d %d\n",c[i][j][0],c[i][j][3]);
+                    printf("%d %d\n",c[i][j][1],c[i][j][2]);
+                    printf("%d %d\n",c[i][j][1],c[i][j][3]);
+                    printf("%d %d\n",c[i][j][2],c[i][j][3]);
+                    */
+
                     break;
                 case '4':
                     printf("----\nc(%d,%d) %c\n",i,j,r);
+
                     for(int k=0; k<4;k++){                        
                         clausulas.push_back(to_string(c[i][j][k])+" 0");
                         printf("%d\n",c[i][j][k]);
@@ -131,26 +150,71 @@ void createVariables(int n, int m){
                     break;
             }            
             
+
             // Clausulas tipo 2 de la ayuda (Aqui creo que van para que quede ordenado en el archivo)
-            if (z[0][j]) clausulas.push_back("-"+to_string(c[0][j][1])+" 0");
-            if (z[n-1][j]) clausulas.push_back("-"+to_string(c[n-1][j][3])+" 0");
-            if (z[i][0]) clausulas.push_back("-"+to_string(c[i][0][2])+" 0");
-            if (z[i][m-1]) clausulas.push_back("-"+to_string(c[i][m-1][0])+" 0");
+            //if (z[0][j]) clausulas.push_back("-"+to_string(c[0][j][1])+" 0");
+            //if (z[n-1][j]) clausulas.push_back("-"+to_string(c[n-1][j][3])+" 0");
+            //if (z[i][0]) clausulas.push_back("-"+to_string(c[i][0][2])+" 0");
+            //if (z[i][m-1]) clausulas.push_back("-"+to_string(c[i][m-1][0])+" 0");
+
+        // Clausulas tipo 2 
+            //borde izq
+            if(z[i][0])
+                //(-c[i][0][1] or TRUE) and (c[i][0][1] or -TRUE)
+                clausulas.push_back(to_string(c[i][0][1])+" 0");
+            //borde der
+            if(z[i][m-1])
+                //(-c[i][m-1][3] or TRUE) and (c[i][m-1][3] or -TRUE)
+                clausulas.push_back(to_string(c[i][m-1][3])+" 0");
+            //boder norte
+            if(z[0][j])
+                //(-c[0][j][0] or TRUE) and (c[0][j][0] or -TRUE)
+                clausulas.push_back(to_string(c[0][j][0])+" 0");
+            //boder sur
+            if(z[n-1][j])
+                //(-c[n-1][j][2] or TRUE) and (c[n-1][j][2] or -TRUE)
+                clausulas.push_back(to_string(c[n-1][j][2])+" 0");        
         }
     }
-    // Clausulas tipo 0 pero honestamente no me cuadran.
-    /*for (int i = 0; i < n-1; ++i) {
-        for (int j = 0; j < m-1; ++j) {
-            if (c[i][j][3] != c[i+1][j][1]) {
-                clausulas.push_back("-"+to_string(c[i][j][3])+" "+to_string(c[i+1][j][1])+" 0");
-                clausulas.push_back(to_string(c[i][j][3])+" -"+to_string(c[i+1][j][1])+" 0");
-            }
-            if (c[i][j][0] != c[i][j+1][2]) {
-                clausulas.push_back("-"+to_string(c[i][j][0])+" "+to_string(c[i][j+1][2])+" 0");
-                clausulas.push_back(to_string(c[i][j][0])+" -"+to_string(c[i][j+1][2])+" 0");
-            }
+
+    // Clausulas tipo 2 (interiores)
+    for (int i = 1; i < n-1; ++i) {
+        for (int j = 1; j < m-1; ++j) {
+            //z(i,j) <=> [-q(i,j,n) & z(i,j+1)] v [-q(i,j,e) & z(i+1,j)] v [-q(i,j,s) & z(i,j-1)] v [-q(i,j,w) & z(i-1,j)]
+            if(z[i][j]) continue;//creo que no hace falta este if pero por si acaso 
+            
+            // q(i,j,n) or -z(i-1,j)
+            if(z[i-1][j]) clausulas.push_back(to_string(c[i][j][0])+" 0");
+            // q(i,j,e) or -z(i,j+1)
+            if(z[i][j+1]) clausulas.push_back(to_string(c[i][j][3])+" 0");
+            // q(i,j,s) or -z(i+1,j)
+            if(z[i+1][j]) clausulas.push_back(to_string(c[i][j][2])+" 0");
+            // q(i,j,w) or -z(i,j-1)
+            if(z[i][j-1]) clausulas.push_back(to_string(c[i][j][1])+" 0");
         }
-    }*/
+    }
+
+
+    // Clausulas tipo 0. NO LAS CREO NECESARIAS
+    //cout << "\nCLAUSULAS TIPO 0" << endl;
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m-1; ++j) {
+            clausulas.push_back("-"+to_string(c[i][j][3])+" "+to_string(c[i][j+1][1])+" 0");
+            clausulas.push_back(to_string(c[i][j][3])+" -"+to_string(c[i][j+1][1])+" 0");
+
+            //printf("-%d %d 0\n",c[i][j][3] ,c[i][j+1][1]);
+            //printf("%d -%d 0\n",c[i][j][3] ,c[i][j+1][1]);
+        }
+    }
+    for (int i = 0; i < n-1; ++i) {
+        for (int j = 0; j < m; ++j) {
+            clausulas.push_back("-"+to_string(c[i][j][2])+" "+to_string(c[i+1][j][0])+" 0");
+            clausulas.push_back(to_string(c[i][j][2])+" -"+to_string(c[i+1][j][0])+" 0");
+
+            //printf("-%d %d 0\n",c[i][j][2] ,c[i+1][j][0]);
+           // printf("%d -%d 0\n",c[i][j][2] ,c[i+1][j][0]);
+        }
+    }
 }
 
 void createDimacsFile(int n, int m) {
