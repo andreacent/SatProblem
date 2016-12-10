@@ -33,7 +33,7 @@ void createVariables(int n, int m){
         } 
     }
 
-    cout << "\nFormulas (Cláusulas tipo 0)" << endl;
+    cout << "\nFormulas (Cláusulas tipo 1)" << endl;
     char r;
     string f,h;
     for(int i=0; i<n; i++){
