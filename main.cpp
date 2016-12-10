@@ -8,20 +8,20 @@
 using namespace std;
 vector<string> restricciones;
 vector<string> clausulas;
+vector<string> solucion;
 
 void createVariables(int n, int m){
     int c[n][m][4]; //variables de cada recuadro
     bool z[n][m];   //celda interior=FALSE, celda exterior=TRUE
     int aux = 1;    //auxiliar para numerar variables
-
     cout << "\nc(i,j), Variables, ¿celda exterior?" << endl;
     while(n+m+1+aux < n*m){
         for(int i=0; i<n ; i++){
             for(int j=0; j<m ; j++){
                 c[i][j][0] = aux;          //superior  (norte)
-                c[i][j][1] = n+aux;        //izquierdo (este)
+                c[i][j][1] = n+aux;        //izquierdo (oeste)
                 c[i][j][2] = n+m+1+aux;    //inferior  (sur)
-                c[i][j][3] = n+1+aux;      //derecho   (oeste)
+                c[i][j][3] = n+1+aux;      //derecho   (este)
 
                 if(i==0 || i==n-1 || j==0 || j==m-1) z[i][j] = true;
                 else z[i][j] = false;
@@ -129,9 +129,28 @@ void createVariables(int n, int m){
                         printf("%d\n",c[i][j][k]);
                     }
                     break;
-            }
+            }            
+            
+            // Clausulas tipo 2 de la ayuda (Aqui creo que van para que quede ordenado en el archivo)
+            if (z[0][j]) clausulas.push_back("-"+to_string(c[0][j][1])+" 0");
+            if (z[n-1][j]) clausulas.push_back("-"+to_string(c[n-1][j][3])+" 0");
+            if (z[i][0]) clausulas.push_back("-"+to_string(c[i][0][2])+" 0");
+            if (z[i][m-1]) clausulas.push_back("-"+to_string(c[i][m-1][0])+" 0");
         }
     }
+    // Clausulas tipo 0 pero honestamente no me cuadran.
+    /*for (int i = 0; i < n-1; ++i) {
+        for (int j = 0; j < m-1; ++j) {
+            if (c[i][j][3] != c[i+1][j][1]) {
+                clausulas.push_back("-"+to_string(c[i][j][3])+" "+to_string(c[i+1][j][1])+" 0");
+                clausulas.push_back(to_string(c[i][j][3])+" -"+to_string(c[i+1][j][1])+" 0");
+            }
+            if (c[i][j][0] != c[i][j+1][2]) {
+                clausulas.push_back("-"+to_string(c[i][j][0])+" "+to_string(c[i][j+1][2])+" 0");
+                clausulas.push_back(to_string(c[i][j][0])+" -"+to_string(c[i][j+1][2])+" 0");
+            }
+        }
+    }*/
 }
 
 void createDimacsFile(int n, int m) {
@@ -145,10 +164,33 @@ void createDimacsFile(int n, int m) {
     archivo.close();
 }
 
+bool traduceSATFile(int n, int m){
+    string tipo = "SAT";
+    ifstream infile("salida.txt");
+    string traduccion;
+    int i = 0;
+    cout<<"traduccion \n";
+    while(getline(infile, traduccion)){
+        if (tipo.compare(traduccion)==0) {
+            while(getline(infile,traduccion,' ') && i<60){
+                solucion.push_back(traduccion);
+                cout<<traduccion<<endl;
+                i++;
+            }
+        } else {
+            cout << "No se encontro solucion \n";
+            return false;
+        }               
+    }
+    cout<<"TAMANO " << solucion.size()<<endl;
+    infile.close();
+    return true;
+}
+
 int main(int argc, char const *argv[]) {
 
     int n,m; // n-filas,m-columnas
-    //std::pair<float,int> respuesta;
+    bool resultado;
     
     ifstream infile("example_input.txt");
     //ifstream infile(argv[1]);  //Lectura pasada a traves de stdin
@@ -176,17 +218,14 @@ int main(int argc, char const *argv[]) {
         createDimacsFile(n,m);
 
         int status=system("minisat entrada.txt salida.txt > /dev/null");
-        string tmp;
         if (status) {
-            ifstream infile("salida.txt");
-            string traduccion;
-            while(getline(infile, traduccion)){
-                 istringstream ss(traduccion);
-                if (ss == "SAT") {
-                    getline(ss,tmp);   
-                }                
-            }
+            resultado=traduceSATFile(n,m);
+        } else {
+            cout<<"Ocurrio un error al ejecutar: \"minisat entrada.txt salida.txt > /dev/null\" \n";
+            return EXIT_FAILURE;
         }
+
+
 
         // IMPRIMIR CNF
         //int num_vars = (n+1)*n+(m+1)*m;
