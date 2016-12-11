@@ -181,7 +181,17 @@ void createVariables(int n, int m){
                 clausulas.push_back(to_string(z[i-1][j])+" -"+to_string(z[i][j])+" "+to_string(z[i][j+1])+" "+to_string(z[i+1][j])+" -"+to_string(c[i][j][2])+" 0");
                 clausulas.push_back(to_string(z[i-1][j])+" -"+to_string(z[i][j])+" "+to_string(z[i][j+1])+" "+to_string(z[i+1][j])+" "+to_string(z[i][j-1])+" 0");
                 clausulas.push_back("-"+to_string(z[i][j])+" -"+to_string(c[i][j][0])+" -"+to_string(c[i][j][3])+" -"+to_string(c[i][j][2])+" -"+to_string(c[i][j][1]) +" 0");
-
+                clausulas.push_back("-"+to_string(z[i][j])+" -"+to_string(c[i][j][0])+" -"+to_string(c[i][j][3])+" "+to_string(z[i][j-1])+" -"+to_string(c[i][j][1]) +" 0");
+                clausulas.push_back("-"+to_string(z[i][j])+" -"+to_string(c[i][j][0])+" -"+to_string(z[i+1][j])+" -"+to_string(c[i][j][2])+" -"+to_string(c[i][j][1]) +" 0");
+                clausulas.push_back("-"+to_string(z[i][j])+" -"+to_string(c[i][j][0])+" "+to_string(z[i+1][j])+" "+to_string(z[i][j-1])+" -"+to_string(c[i][j][1]) +" 0");
+                clausulas.push_back("-"+to_string(z[i][j])+" "+to_string(z[i][j+1])+" -"+to_string(c[i][j][3])+" -"+to_string(c[i][j][2])+" -"+to_string(c[i][j][1]) +" 0");
+                clausulas.push_back("-"+to_string(z[i][j])+" "+to_string(z[i][j+1])+" -"+to_string(c[i][j][3])+" "+to_string(z[i][j-1])+" -"+to_string(c[i][j][1]) +" 0");
+                clausulas.push_back("-"+to_string(z[i][j])+" "+to_string(z[i][j+1])+" "+to_string(z[i+1][j])+" -"+to_string(c[i][j][2])+" -"+to_string(c[i][j][1]) +" 0");
+                clausulas.push_back("-"+to_string(z[i][j])+" "+to_string(z[i][j+1])+" "+to_string(z[i+1][j])+" "+to_string(z[i][j-1])+" -"+to_string(c[i][j][1]) +" 0");
+                clausulas.push_back("-"+to_string(z[i-1][j])+" -"+to_string(z[i][j])+" "+to_string(c[i][j][1]) +" 0");
+                clausulas.push_back("-"+to_string(z[i][j])+" "+to_string(c[i][j][0])+" -"+to_string(z[i][j+1]) +" 0");
+                clausulas.push_back("-"+to_string(z[i][j])+" "+to_string(c[i][j][3])+" -"+to_string(z[i+1][j]) +" 0");
+                clausulas.push_back("-"+to_string(z[i][j])+" "+to_string(c[i][j][2])+" -"+to_string(z[i][j-1]) +" 0");
             }
         }
     }
