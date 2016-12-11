@@ -33,7 +33,7 @@ void createVariables(int n, int m){
         } 
     }
 
-    cout << "\nCLAUSULAS TIPO 1" << endl;
+    //cout << "\nCLAUSULAS TIPO 1" << endl;
     char r;
     string f,h;
     for(int i=0; i<n; i++){
@@ -197,6 +197,7 @@ void createVariables(int n, int m){
 
     // Clausulas tipo 0. NO LAS CREO NECESARIAS
     //cout << "\nCLAUSULAS TIPO 0" << endl;
+    /*
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < m-1; ++j) {
             clausulas.push_back("-"+to_string(c[i][j][3])+" "+to_string(c[i][j+1][1])+" 0");
@@ -213,6 +214,78 @@ void createVariables(int n, int m){
 
             //printf("-%d %d 0\n",c[i][j][2] ,c[i+1][j][0]);
            // printf("%d -%d 0\n",c[i][j][2] ,c[i+1][j][0]);
+        }
+    }
+    */
+
+
+    // Clausulas tipo 3
+    cout << "\nCLAUSULAS TIPO 3" << endl;
+    int q0,q1;
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            printf("\n--------c(%d,%d)---------",i,j);
+            for (int k1 = 0; k1 < 4; ++k1) {
+                for (int k2 = 0; k2 < 4; ++k2) { 
+                    //c es oeste de c' 
+                    if(c[i][j][2] != c[i][j+1][0] && j+1<m){ //c[i][j][2] != c[i][j+1][0]
+                        q0 = c[i][j][k1];
+                        q1 = c[i][j+1][k2];
+                        printf("\n---c'(%d,%d)\n",i,j+1);
+                        if(i>0){//norte de c'
+                            /* 
+                            f="";
+                            f+=to_string(q0)+" "+to_string(q1)+" "+to_string(c[i][j+1][0]);
+                            clausulas.push_back(f+to_string(q0)+" 0");
+                            clausulas.push_back(f+to_string(c[i-1][j+1][0])+" 0");
+                            clausulas.push_back(f+to_string(c[i-1][j+1][1])+" 0");
+                            clausulas.push_back(f+to_string(c[i-1][j+1][3])+" 0");
+                            */
+
+                            printf("c''(%d,%d)\n", i-1,j+1);
+                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][0],q0);
+                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][0],c[i-1][j+1][0]);  
+                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][0],c[i-1][j+1][1]);
+                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][0],c[i-1][j+1][3]);
+                        }
+                        if(i+1<n){ //sur de c'
+                            /* 
+                            f="";
+                            f+=to_string(q0)+" "+to_string(q1)+" "+to_string(c[i][j+1][2]);
+                            clausulas.push_back(f+to_string(q0)+" 0");
+                            clausulas.push_back(f+to_string(c[i+1][j+1][1])+" 0");
+                            clausulas.push_back(f+to_string(c[i+1][j+1][2])+" 0");
+                            clausulas.push_back(f+to_string(c[i+1][j+1][3])+" 0");
+                            */
+
+                            printf("c''(%d,%d)\n", i+1,j+1);
+                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][2],q0);
+                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][2],c[i+1][j+1][1]);
+                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][2],c[i+1][j+1][2]);
+                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][2],c[i+1][j+1][3]);
+                        }
+                        if(j+2<m){ //este de c'
+                        /*
+                            f="";
+                            f+=to_string(q0)+" "+to_string(q1)+" "+to_string(c[i][j+1][3]);
+                            clausulas.push_back(f+to_string(q0)+" 0");
+                            clausulas.push_back(f+to_string(c[i][j+2][0])+" 0");
+                            clausulas.push_back(f+to_string(c[i][j+2][2])+" 0");
+                            clausulas.push_back(f+to_string(c[i][j+2][3])+" 0");
+                            */
+
+
+                            printf("c''(%d,%d)\n",i,j+2);
+                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][3],q0);
+                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][3],c[i][j+2][0]);
+                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][3],c[i][j+2][2]);
+                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][3],c[i][j+2][3]);
+                        }
+                    }
+
+                }
+
+            }
         }
     }
 }
