@@ -234,7 +234,7 @@ void createVariables(int n, int m){
                         printf("\n---c'(%d,%d)\n",i,j+1);
                         if(i>0){//norte de c'
                             /* 
-                            f="";
+                            f="-";
                             f+=to_string(q0)+" "+to_string(q1)+" "+to_string(c[i][j+1][0]);
                             clausulas.push_back(f+to_string(q0)+" 0");
                             clausulas.push_back(f+to_string(c[i-1][j+1][0])+" 0");
@@ -243,14 +243,14 @@ void createVariables(int n, int m){
                             */
 
                             printf("c''(%d,%d)\n", i-1,j+1);
-                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][0],q0);
-                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][0],c[i-1][j+1][0]);  
-                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][0],c[i-1][j+1][1]);
-                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][0],c[i-1][j+1][3]);
+                            printf("-%d -%d %d %d\n",q0,q1,c[i][j+1][0],q0);
+                            printf("-%d -%d %d %d\n",q0,q1,c[i][j+1][0],c[i-1][j+1][0]);  
+                            printf("-%d -%d %d %d\n",q0,q1,c[i][j+1][0],c[i-1][j+1][1]);
+                            printf("-%d -%d %d %d\n",q0,q1,c[i][j+1][0],c[i-1][j+1][3]);
                         }
                         if(i+1<n){ //sur de c'
                             /* 
-                            f="";
+                            f="-";
                             f+=to_string(q0)+" "+to_string(q1)+" "+to_string(c[i][j+1][2]);
                             clausulas.push_back(f+to_string(q0)+" 0");
                             clausulas.push_back(f+to_string(c[i+1][j+1][1])+" 0");
@@ -259,14 +259,14 @@ void createVariables(int n, int m){
                             */
 
                             printf("c''(%d,%d)\n", i+1,j+1);
-                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][2],q0);
-                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][2],c[i+1][j+1][1]);
-                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][2],c[i+1][j+1][2]);
-                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][2],c[i+1][j+1][3]);
+                            printf("-%d -%d %d %d\n",q0,q1,c[i][j+1][2],q0);
+                            printf("-%d -%d %d %d\n",q0,q1,c[i][j+1][2],c[i+1][j+1][1]);
+                            printf("-%d -%d %d %d\n",q0,q1,c[i][j+1][2],c[i+1][j+1][2]);
+                            printf("-%d -%d %d %d\n",q0,q1,c[i][j+1][2],c[i+1][j+1][3]);
                         }
                         if(j+2<m){ //este de c'
                         /*
-                            f="";
+                            f="-";
                             f+=to_string(q0)+" "+to_string(q1)+" "+to_string(c[i][j+1][3]);
                             clausulas.push_back(f+to_string(q0)+" 0");
                             clausulas.push_back(f+to_string(c[i][j+2][0])+" 0");
@@ -276,10 +276,10 @@ void createVariables(int n, int m){
 
 
                             printf("c''(%d,%d)\n",i,j+2);
-                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][3],q0);
-                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][3],c[i][j+2][0]);
-                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][3],c[i][j+2][2]);
-                            printf("%d -%d %d %d\n",q0,q1,c[i][j+1][3],c[i][j+2][3]);
+                            printf("-%d -%d %d %d\n",q0,q1,c[i][j+1][3],q0);
+                            printf("-%d -%d %d %d\n",q0,q1,c[i][j+1][3],c[i][j+2][0]);
+                            printf("-%d -%d %d %d\n",q0,q1,c[i][j+1][3],c[i][j+2][2]);
+                            printf("-%d -%d %d %d\n",q0,q1,c[i][j+1][3],c[i][j+2][3]);
                         }
                     }
 
