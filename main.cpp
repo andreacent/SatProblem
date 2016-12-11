@@ -230,6 +230,61 @@ bool traduceSATFile(int n, int m){
     return true;
 }
 
+void createOutputFile(string firstLine, bool sat, int filas, int columnas) {
+    //int modulo = filas+columnas+1;
+    int horizontales[n+1][n];
+    int verticales[m][m+1];
+    int aux;
+    int contador=0;
+    int i=0;
+    int j=0;
+    bool cambio = false;
+    string tmp;
+    //string aux = "-";
+    for (int k = 0; k < solucion.size(); ++k) {
+        tmp = solucion[k];
+        if (tmp[1]=="-"){
+            cout<<"NO EN EL NUMERO: "<<k<<"\n";
+            aux=0;
+        } else{
+            cout<<"SI EN EL NUMERO: "<<k<<"\n";
+            aux=1;
+        }
+        if (cambio) {
+            // Paso al arreglo de verticales
+            verticales[i][j]=aux;
+        } else {
+            // Paso al arreglo de horizontales
+            horizontales[i][j]=aux;
+        }
+        contador++;
+        j++;
+        if (contador == n && j == m && !cambio) {
+            cambio = true;
+            contador = 0;
+            j = 0;
+        } else if (contador == m+1 && j==m+1 && cambio){
+            cambio = false;
+            contador = 0;
+            i++;
+            j = 0;
+        }
+
+
+
+    }
+
+    ofstream output;
+    output.open("output.txt",app);
+    output << firstLine<<"\n";
+    for (unsigned i = 0; i < clausulas.size(); ++i) {
+        output << clausulas[i] << "\n";
+    }
+    output.close();
+
+
+}
+
 int main(int argc, char const *argv[]) {
 
     int n,m; // n-filas,m-columnas
@@ -270,6 +325,7 @@ int main(int argc, char const *argv[]) {
 
         if (resultado) {
             cout<< "Aqui se llama funcion que modifica archivo salida \n";
+            createOutputFile(line, resultado, n, m);
         } else {
             cout << "NUNCA DEBERIA LLEGAR A ESTA PARTE \n";
         }
