@@ -12,25 +12,23 @@ vector<string> solucion;
 
 void createVariables(int n, int m){
     int c[n][m][4]; //variables de cada recuadro
-    char z[n][m];   //celda interior=FALSE, celda exterior=TRUE
+    int z[n][m];   //celda interior=FALSE, celda exterior=TRUE
     int aux = 1;    //auxiliar para numerar variables
+    int contador = 1; //Aumenta de a uno cada valor en z
     cout << "\nc(i,j), Variables, ¿celda exterior?" << endl;
-    while(n+m+1+aux < n*m){
-        for(int i=0; i<n ; i++){
-            for(int j=0; j<m ; j++){
-                c[i][j][0] = aux;          //superior  (norte)
-                c[i][j][1] = n+aux;        //izquierdo (oeste)
-                c[i][j][2] = n+m+1+aux;    //inferior  (sur)
-                c[i][j][3] = n+1+aux;      //derecho   (este)
 
-                if(i==0 || i==n-1 || j==0 || j==m-1) z[i][j] = true;
-                else z[i][j] = false;
-
-                printf("c(%d,%d), { %d,%d,%d,%d }, %d\n",i,j,c[i][j][0],c[i][j][1],c[i][j][2],c[i][j][3],z[i][j]);
-                aux++;
-            }
-            aux += m+1; //paso a siguiente fila
-        } 
+    for(int i=0; i<n ; i++){
+        for(int j=0; j<m ; j++){
+            c[i][j][0] = aux;          //superior  (norte)
+            c[i][j][1] = n+aux;        //izquierdo (oeste)
+            c[i][j][2] = n+m+1+aux;    //inferior  (sur)
+            c[i][j][3] = n+1+aux;      //derecho   (este)
+            z[i][j]= n*(n+1)+m*(m+1)+contador;             
+            printf("c(%d,%d), { %d,%d,%d,%d }, %d\n",i,j,c[i][j][0],c[i][j][1],c[i][j][2],c[i][j][3],z[i][j]);
+            aux++;
+            contador++;
+        }
+        aux += m+1; //paso a siguiente fila
     }
 
     cout << "\nCLAUSULAS TIPO 1" << endl;
@@ -43,10 +41,8 @@ void createVariables(int n, int m){
                 case '.':
                     break; 
                 case '0':
-                    for(int k=0; k<4;k++){                        
-                        clausulas.push_back("-"+to_string(c[i][j][k])+" 0");
-                        //printf("-%d\n",c[i][j][k]);
-                    }
+                    for(int k=0; k<4;k++) clausulas.push_back("-"+to_string(c[i][j][k])+" 0");
+                    //printf("-%d\n",c[i][j][k]);
                     break; 
                 case '1':
                     f="";
@@ -148,71 +144,45 @@ void createVariables(int n, int m){
                         printf("%d\n",c[i][j][k]);
                     }
                     break;
-            }            
-            
+            }
+            // Clausulas tipo 2 (Externas)
+            if (i==0) {
+                clausulas.push_back(to_string(c[i][j][1])+" "+to_string(z[i][j])+" 0");
+                clausulas.push_back("-"+to_string(z[i][j])+" -"+to_string(c[i][j][1])+" 0");
+            }
+            if (i==n-1) {
+                clausulas.push_back(to_string(c[i][j][3])+" "+to_string(z[i][j])+" 0");
+                clausulas.push_back("-"+to_string(z[i][j])+" -"+to_string(c[i][j][3])+" 0");   
+            }
+            if (j==0){
+                clausulas.push_back(to_string(c[i][j][2])+" "+to_string(z[i][j])+" 0");
+                clausulas.push_back("-"+to_string(z[i][j])+" -"+to_string(c[i][j][2])+" 0");
+            }
+            if (j==m-1){
+                clausulas.push_back(to_string(c[i][j][0])+" "+to_string(z[i][j])+" 0");
+                clausulas.push_back("-"+to_string(z[i][j])+" -"+to_string(c[i][j][0])+" 0");
+            }
+            // Clausulas tipo 2 (Internas)
+            if (i!=0 && i!=n-1 && j!=0 && j!=m-1) {
+                // X <=> Y === (X v ~Y)^(~X v Y)
+                //(X v ~Y)
+                clausulas.push_back(to_string(z[i][j])+" "+to_string(c[i][j][0])+" -"+to_string(z[i][j+1])+" 0");
+                clausulas.push_back(to_string(z[i][j])+" "+to_string(c[i][j][3])+" -"+to_string(z[i+1][j])+" 0");
+                clausulas.push_back(to_string(z[i][j])+" "+to_string(c[i][j][2])+" -"+to_string(z[i][j-1])+" 0");
+                clausulas.push_back(to_string(z[i][j])+" "+to_string(c[i][j][1])+" -"+to_string(z[i-1][j])+" 0");
 
-            // Clausulas tipo 2 de la ayuda (Aqui creo que van para que quede ordenado en el archivo)
-            //if (z[0][j]) clausulas.push_back("-"+to_string(c[0][j][1])+" 0");
-            //if (z[n-1][j]) clausulas.push_back("-"+to_string(c[n-1][j][3])+" 0");
-            //if (z[i][0]) clausulas.push_back("-"+to_string(c[i][0][2])+" 0");
-            //if (z[i][m-1]) clausulas.push_back("-"+to_string(c[i][m-1][0])+" 0");
+                //(~X v Y)
+                clausulas.push_back(to_string(z[i-1][j])+" -"+to_string(z[i][j])+" -"+to_string(c[i][j][0])+" -"+to_string(c[i][j][3])+" -"+to_string(c[i][j][2])+" 0");
+                clausulas.push_back(to_string(z[i-1][j])+" -"+to_string(z[i][j])+" -"+to_string(c[i][j][0])+" -"+to_string(c[i][j][3])+" "+to_string(z[i][j-1])+" 0");
+                clausulas.push_back(to_string(z[i-1][j])+" -"+to_string(z[i][j])+" -"+to_string(c[i][j][0])+" "+to_string(z[i+1][j])+" -"+to_string(c[i][j][2])+" 0");
+                clausulas.push_back(to_string(z[i-1][j])+" -"+to_string(z[i][j])+" -"+to_string(c[i][j][0])+" "+to_string(z[i+1][j])+" "+to_string(z[i][j-1])+" 0");
+                clausulas.push_back(to_string(z[i-1][j])+" -"+to_string(z[i][j])+" "+to_string(z[i][j+1])+" -"+to_string(c[i][j][3])+" -"+to_string(c[i][j][2])+" 0");
+                clausulas.push_back(to_string(z[i-1][j])+" -"+to_string(z[i][j])+" "+to_string(z[i][j+1])+" -"+to_string(c[i][j][3])+" "+to_string(z[i][j-1])+" 0");
+                clausulas.push_back(to_string(z[i-1][j])+" -"+to_string(z[i][j])+" "+to_string(z[i][j+1])+" "+to_string(z[i+1][j])+" -"+to_string(c[i][j][2])+" 0");
+                clausulas.push_back(to_string(z[i-1][j])+" -"+to_string(z[i][j])+" "+to_string(z[i][j+1])+" "+to_string(z[i+1][j])+" "+to_string(z[i][j-1])+" 0");
+                clausulas.push_back("-"+to_string(z[i][j])+" -"+to_string(c[i][j][0])+" -"+to_string(c[i][j][3])+" -"+to_string(c[i][j][2])+" -"+to_string(c[i][j][1]) +" 0");
 
-        // Clausulas tipo 2 
-            //borde izq
-            if(z[i][0])
-                //(-c[i][0][1] or TRUE) and (c[i][0][1] or -TRUE)
-                clausulas.push_back(to_string(c[i][0][1])+" 0");
-            //borde der
-            if(z[i][m-1])
-                //(-c[i][m-1][3] or TRUE) and (c[i][m-1][3] or -TRUE)
-                clausulas.push_back(to_string(c[i][m-1][3])+" 0");
-            //boder norte
-            if(z[0][j])
-                //(-c[0][j][0] or TRUE) and (c[0][j][0] or -TRUE)
-                clausulas.push_back(to_string(c[0][j][0])+" 0");
-            //boder sur
-            if(z[n-1][j])
-                //(-c[n-1][j][2] or TRUE) and (c[n-1][j][2] or -TRUE)
-                clausulas.push_back(to_string(c[n-1][j][2])+" 0");        
-        }
-    }
-
-    // Clausulas tipo 2 (interiores)
-    for (int i = 1; i < n-1; ++i) {
-        for (int j = 1; j < m-1; ++j) {
-            //z(i,j) <=> [-q(i,j,n) & z(i,j+1)] v [-q(i,j,e) & z(i+1,j)] v [-q(i,j,s) & z(i,j-1)] v [-q(i,j,w) & z(i-1,j)]
-            if(z[i][j]) continue;//creo que no hace falta este if pero por si acaso 
-            
-            // q(i,j,n) or -z(i-1,j)
-            if(z[i-1][j]) clausulas.push_back(to_string(c[i][j][0])+" 0");
-            // q(i,j,e) or -z(i,j+1)
-            if(z[i][j+1]) clausulas.push_back(to_string(c[i][j][3])+" 0");
-            // q(i,j,s) or -z(i+1,j)
-            if(z[i+1][j]) clausulas.push_back(to_string(c[i][j][2])+" 0");
-            // q(i,j,w) or -z(i,j-1)
-            if(z[i][j-1]) clausulas.push_back(to_string(c[i][j][1])+" 0");
-        }
-    }
-
-
-    // Clausulas tipo 0. NO LAS CREO NECESARIAS
-    //cout << "\nCLAUSULAS TIPO 0" << endl;
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m-1; ++j) {
-            clausulas.push_back("-"+to_string(c[i][j][3])+" "+to_string(c[i][j+1][1])+" 0");
-            clausulas.push_back(to_string(c[i][j][3])+" -"+to_string(c[i][j+1][1])+" 0");
-
-            //printf("-%d %d 0\n",c[i][j][3] ,c[i][j+1][1]);
-            //printf("%d -%d 0\n",c[i][j][3] ,c[i][j+1][1]);
-        }
-    }
-    for (int i = 0; i < n-1; ++i) {
-        for (int j = 0; j < m; ++j) {
-            clausulas.push_back("-"+to_string(c[i][j][2])+" "+to_string(c[i+1][j][0])+" 0");
-            clausulas.push_back(to_string(c[i][j][2])+" -"+to_string(c[i+1][j][0])+" 0");
-
-            //printf("-%d %d 0\n",c[i][j][2] ,c[i+1][j][0]);
-           // printf("%d -%d 0\n",c[i][j][2] ,c[i+1][j][0]);
+            }
         }
     }
 }
@@ -221,7 +191,7 @@ void createDimacsFile(int n, int m) {
 
     ofstream archivo;
     archivo.open("entrada.txt");
-    archivo << "p cnf " << (n+1)*n+(m+1)*m << " " << clausulas.size() <<"\n";
+    archivo << "p cnf " << (n+1)*n+(m+1)*m+n*m << " " << clausulas.size() <<"\n";
     for (unsigned i = 0; i < clausulas.size(); ++i) {
         archivo << clausulas[i] << "\n";
     }
@@ -230,22 +200,21 @@ void createDimacsFile(int n, int m) {
 
 bool traduceSATFile(int n, int m){
     string tipo = "SAT";
-    ifstream infile("salida.txt");
+    ifstream infile("salida1.txt");
     string traduccion;
     int i = 0;
     cout<<"traduccion \n";
-    while(getline(infile, traduccion)){
-        if (tipo.compare(traduccion)==0) {
-            while(getline(infile,traduccion,' ') && i<60){
-                solucion.push_back(traduccion);
-                cout<<traduccion<<endl;
-                i++;
-            }
-        } else {
-            cout << "No se encontro solucion \n";
-            return false;
-        }               
-    }
+    getline(infile, traduccion);
+    if (tipo.compare(traduccion)==0) {
+        while(getline(infile,traduccion,' ') && i<(n+1)*n+(m+1)*m){
+            solucion.push_back(traduccion);
+            cout<<traduccion<<endl;
+            i++;
+        }
+    } else {
+        cout << "No se encontro solucion \n";
+        return false;
+    }               
     cout<<"TAMANO " << solucion.size()<<endl;
     infile.close();
     return true;
@@ -281,12 +250,18 @@ int main(int argc, char const *argv[]) {
 
         createDimacsFile(n,m);
 
-        int status=system("minisat entrada.txt salida.txt > /dev/null");
+        int status=system("minisat entrada.txt salida1.txt > /dev/null");
         if (status) {
             resultado=traduceSATFile(n,m);
         } else {
             cout<<"Ocurrio un error al ejecutar: \"minisat entrada.txt salida.txt > /dev/null\" \n";
             return EXIT_FAILURE;
+        }
+
+        if (resultado) {
+            cout<< "Aqui se llama funcion que modifica archivo salida \n";
+        } else {
+            cout << "NUNCA DEBERIA LLEGAR A ESTA PARTE \n";
         }
 
 
