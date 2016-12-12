@@ -31,7 +31,7 @@ void createVariables(int n, int m){
         aux += m+1; //paso a siguiente fila
     }
 
-    cout << "\nCLAUSULAS TIPO 1" << endl;
+    //cout << "\nCLAUSULAS TIPO 1" << endl;
     char r;
     string f,h;
     for(int i=0; i<n; i++){
@@ -200,7 +200,7 @@ void createVariables(int n, int m){
 void createDimacsFile(int n, int m) {
 
     ofstream archivo;
-    archivo.open("entrada.txt");
+    archivo.open("entradaCNF.txt");
     archivo << "p cnf " << (n+1)*n+(m+1)*m+n*m << " " << clausulas.size() <<"\n";
     for (unsigned i = 0; i < clausulas.size(); ++i) {
         archivo << clausulas[i] << "\n";
@@ -210,7 +210,7 @@ void createDimacsFile(int n, int m) {
 
 bool traduceSATFile(int n, int m){
     string tipo = "SAT";
-    ifstream infile("salida1.txt");
+    ifstream infile("salidaCNF.txt");
     string traduccion;
     int i = 0;
     cout<<"traduccion \n";
@@ -230,59 +230,81 @@ bool traduceSATFile(int n, int m){
     return true;
 }
 
-void createOutputFile(string firstLine, bool sat, int filas, int columnas) {
-    //int modulo = filas+columnas+1;
-    int horizontales[n+1][n];
-    int verticales[m][m+1];
-    int aux;
-    int contador=0;
-    int i=0;
-    int j=0;
-    bool cambio = false;
-    string tmp;
-    //string aux = "-";
-    for (int k = 0; k < solucion.size(); ++k) {
-        tmp = solucion[k];
-        if (tmp[1]=="-"){
-            cout<<"NO EN EL NUMERO: "<<k<<"\n";
-            aux=0;
-        } else{
-            cout<<"SI EN EL NUMERO: "<<k<<"\n";
-            aux=1;
-        }
-        if (cambio) {
-            // Paso al arreglo de verticales
-            verticales[i][j]=aux;
-        } else {
-            // Paso al arreglo de horizontales
-            horizontales[i][j]=aux;
-        }
-        contador++;
-        j++;
-        if (contador == n && j == m && !cambio) {
-            cambio = true;
-            contador = 0;
-            j = 0;
-        } else if (contador == m+1 && j==m+1 && cambio){
-            cambio = false;
-            contador = 0;
-            i++;
-            j = 0;
-        }
-
-
-
-    }
-
+void createOutputFile(string firstLine, bool sat, int n, int m) {
     ofstream output;
-    output.open("output.txt",app);
+    output.open("output.txt",ios::app);
     output << firstLine<<"\n";
-    for (unsigned i = 0; i < clausulas.size(); ++i) {
-        output << clausulas[i] << "\n";
+    if (!sat) {
+        output<<"UNSAT \n";
+    } else { 
+        output << n << " " << m << " ";
+        int horizontales[n+1][n];
+        int verticales[m][m+1];
+        int aux;
+        int contador=0;
+        int i=0;
+        int j=0;
+        bool cambio = false;
+        string tmp;
+        for (unsigned k = 0; k < solucion.size(); ++k) {
+            tmp = solucion[k];
+            string dummy = to_string(k+1);        
+            if (tmp.compare(dummy)==0) {
+                aux=1;
+            } else{
+                aux=0;
+            }
+    
+            if (cambio) {
+                // Paso al arreglo de verticales
+                verticales[i][j]=aux;
+            } else {
+                // Paso al arreglo de horizontales
+                horizontales[i][j]=aux;
+            }
+            contador++;
+            j++;
+            if (contador == n && j == m && !cambio) {
+                cambio = true;
+                contador = 0;
+                j = 0;
+            } else if (contador == m+1 && j==m+1 && cambio){
+                cambio = false;
+                contador = 0;
+                i++;
+                j = 0;
+            }
+        }
+        // Reinicio de variables
+        i=0;
+        j=0;
+        cambio = false;
+        while(i < n+1){
+            if (cambio) {
+                while(j<m+1) {
+                    output<<verticales[i][j];
+                    j++;
+                }
+                output<<" ";
+                j=0;
+                cambio=false;
+                i++;
+            } else {
+                while(j<n){
+                    output<<horizontales[i][j];
+                    j++;
+                }
+                cambio = true;
+                j=0;
+                output<<" ";
+                if (i==n) {
+                    output<<"\n";
+                    break;
+                }
+            }   
+        }
     }
     output.close();
-
-
 }
 
 int main(int argc, char const *argv[]) {
@@ -290,13 +312,13 @@ int main(int argc, char const *argv[]) {
     int n,m; // n-filas,m-columnas
     bool resultado;
     
-    ifstream infile("example_input.txt");
-    //ifstream infile(argv[1]);  //Lectura pasada a traves de stdin
+    ifstream infile(argv[1]);  //Lectura pasada a traves de stdin
     string line;
     while (getline(infile, line)) {
+        cout<<"Comienzo de iteracion principal, esta es line: \n";
+        cout<<line<<"\n";
         istringstream ss(line);
         string token;
-        int i;
 
         getline(ss,token,' ');
         n = stoi(token);
@@ -304,18 +326,15 @@ int main(int argc, char const *argv[]) {
         m = stoi(token);
 
         printf("n=%d, m=%d\nRestricciones:\n", n,m);
-        i=0;
         while (getline(ss, token,' ')){
             restricciones.push_back(token);
-            cout << restricciones[i] << endl;
-            i++;
         }
 
         createVariables(n,m);
 
         createDimacsFile(n,m);
 
-        int status=system("minisat entrada.txt salida1.txt > /dev/null");
+        int status=system("minisat entradaCNF.txt salidaCNF.txt > /dev/null");
         if (status) {
             resultado=traduceSATFile(n,m);
         } else {
@@ -323,23 +342,11 @@ int main(int argc, char const *argv[]) {
             return EXIT_FAILURE;
         }
 
-        if (resultado) {
-            cout<< "Aqui se llama funcion que modifica archivo salida \n";
-            createOutputFile(line, resultado, n, m);
-        } else {
-            cout << "NUNCA DEBERIA LLEGAR A ESTA PARTE \n";
-        }
-
-
-
-        // IMPRIMIR CNF
-        //int num_vars = (n+1)*n+(m+1)*m;
-        //int num_claus = 0;
-        //ofstream myfile;
-        //myfile.open ("example.cnf");
-        //myfile << "p cnf " << num_vars << " " << num_claus << "\n";
-        //myfile.close();
+        cout<< "Aqui se llama funcion que modifica archivo salida \n";
+        createOutputFile(line, resultado, n, m);
+        restricciones.clear();
+        clausulas.clear();
+        solucion.clear();
     }
- 
     return 0;
 }
