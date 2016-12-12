@@ -204,9 +204,39 @@ void createVariables(int n, int m){
 
             // Clausulas de tipo 3
             // Aqui irian r[i][j][i][j] (las reflexivas)
-            for (int k = 0; k < count; ++k) {
-                for (int l = 0; l < count; ++l) {
+            clausulas.push_back(to_string(r[i][j][i][j])+" 0");
+            for (int k = 0; k < n; ++k) {
+                for (int l = 0; l < m; ++l) {
                     // Aqui irian las internas
+                    //Norte - d = 0
+                    if (l != 0 ) {
+                        clausulas.push_back("-"+to_string(r[i][j][k][l])+" "+to_string(c[k][l][0])+" "+to_string(r[i][j][k][l-1]) +" 0");
+                    }
+
+                    //Oeste - d = 1
+
+                    if (k != 0) {
+                        clausulas.push_back("-"+to_string(r[i][j][k][l])+" "+to_string(c[k][l][1])+" "+to_string(r[i][j][k-1][l]) +" 0");
+                    }
+
+                    //Sur - d = 2
+                    if (l != m-1) {
+                        clausulas.push_back("-"+to_string(r[i][j][k][l])+" "+to_string(c[k][l][2])+" "+to_string(r[i][j][k][l+1]) +" 0");
+                    }
+
+                    //Este - d = 3
+
+                    if (k != n-1){
+                        clausulas.push_back("-"+to_string(r[i][j][k][l])+" "+to_string(c[k][l][3])+" "+to_string(r[i][j][k+1][l]) +" 0");
+                    }
+                }
+            }
+
+            // Celdas interiores alcanzables
+
+            for (int k = 0; k < n; ++k) {
+                for (int l = 0; l < m; ++l) {
+                    clausulas.push_back("-"+to_string(z[i][j])+" -"+to_string(z[k][l])+" "+to_string(r[i][j][k][l])+" 0");
                 }
             }
         }
@@ -217,7 +247,7 @@ void createDimacsFile(int n, int m) {
 
     ofstream archivo;
     archivo.open("entradaCNF.txt");
-    archivo << "p cnf " << (n+1)*n+(m+1)*m+n*m << " " << clausulas.size() <<"\n";
+    archivo << "p cnf " << (n+1)*n+(m+1)*m+n*m+m*n*m*n+n*(m-1)+(n-1) << " " << clausulas.size() <<"\n";
     for (unsigned i = 0; i < clausulas.size(); ++i) {
         archivo << clausulas[i] << "\n";
     }
