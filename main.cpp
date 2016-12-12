@@ -17,7 +17,6 @@ void createVariables(int n, int m){
     int aux = 1;    //auxiliar para numerar variables
     int contador = 1; //Aumenta de a uno cada valor en z
     int hiperContador = 0; //Aumenta de a uno cada valor en r
-    cout << "\nc(i,j), Variables, ¿celda exterior?" << endl;
 
     for(int i=0; i<n ; i++){
         for(int j=0; j<m ; j++){
@@ -32,14 +31,12 @@ void createVariables(int n, int m){
                     hiperContador++;      
                 }
             }
-            printf("c(%d,%d), { %d,%d,%d,%d }, %d\n",i,j,c[i][j][0],c[i][j][1],c[i][j][2],c[i][j][3],z[i][j]);
             aux++;
             contador++;
         }
         aux += m+1; //paso a siguiente fila
     }
 
-    //cout << "\nCLAUSULAS TIPO 1" << endl;
     char a;
     string f,h;
     for(int i=0; i<n; i++){
@@ -50,7 +47,6 @@ void createVariables(int n, int m){
                     break; 
                 case '0':
                     for(int k=0; k<4;k++) clausulas.push_back("-"+to_string(c[i][j][k])+" 0");
-                    //printf("-%d\n",c[i][j][k]);
                     break; 
                 case '1':
                     f="";
@@ -63,17 +59,6 @@ void createVariables(int n, int m){
                     clausulas.push_back("-"+to_string(c[i][j][1])+" -"+to_string(c[i][j][2])+" 0");
                     clausulas.push_back("-"+to_string(c[i][j][1])+" -"+to_string(c[i][j][3])+" 0");
                     clausulas.push_back("-"+to_string(c[i][j][2])+" -"+to_string(c[i][j][3])+" 0");
-
-                    /*
-                    printf("----\nc(%d,%d) %c\n",i,j,r);
-                    cout << f << endl;
-                    printf("-%d -%d\n",c[i][j][0],c[i][j][1]);
-                    printf("-%d -%d\n",c[i][j][0],c[i][j][2]);
-                    printf("-%d -%d\n",c[i][j][0],c[i][j][3]);
-                    printf("-%d -%d\n",c[i][j][1],c[i][j][2]);
-                    printf("-%d -%d\n",c[i][j][1],c[i][j][3]);
-                    printf("-%d -%d\n",c[i][j][2],c[i][j][3]);
-                    */
 
                     break; 
                 case '2':
@@ -94,20 +79,6 @@ void createVariables(int n, int m){
                     clausulas.push_back(to_string(c[i][j][0])+" "+to_string(c[i][j][1])+" "+to_string(c[i][j][3])+" 0");
                     clausulas.push_back(to_string(c[i][j][0])+" "+to_string(c[i][j][2])+" "+to_string(c[i][j][3])+" 0");
                     clausulas.push_back(to_string(c[i][j][1])+" "+to_string(c[i][j][2])+" "+to_string(c[i][j][3])+" 0");
-
-
-                    /*
-                    printf("----\nc(%d,%d) %c\n",i,j,r);
-                    cout << f << endl;
-                    printf("-%d -%d -%d\n",c[i][j][0],c[i][j][1],c[i][j][2]);
-                    printf("-%d -%d -%d\n",c[i][j][0],c[i][j][1],c[i][j][3]);
-                    printf("-%d -%d -%d\n",c[i][j][0],c[i][j][2],c[i][j][3]);
-                    printf("-%d -%d -%d\n",c[i][j][1],c[i][j][2],c[i][j][3]);
-                    printf("%d %d %d\n",c[i][j][0],c[i][j][1],c[i][j][2]);
-                    printf("%d %d %d\n",c[i][j][0],c[i][j][1],c[i][j][3]);
-                    printf("%d %d %d\n",c[i][j][0],c[i][j][2],c[i][j][3]);
-                    printf("%d %d %d\n",c[i][j][1],c[i][j][2],c[i][j][3]);
-                    */
 
                     break; 
                 case '3':
@@ -131,26 +102,9 @@ void createVariables(int n, int m){
                     clausulas.push_back(to_string(c[i][j][1])+" "+to_string(c[i][j][3])+" 0");
                     clausulas.push_back(to_string(c[i][j][2])+" "+to_string(c[i][j][3])+" 0");
 
-                    /*
-                    printf("----\nc(%d,%d) %c\n",i,j,r);
-                    cout << f << endl;
-                    cout << h << endl;
-                    printf("%d %d\n",c[i][j][0],c[i][j][1]);
-                    printf("%d %d\n",c[i][j][0],c[i][j][2]);
-                    printf("%d %d\n",c[i][j][0],c[i][j][3]);
-                    printf("%d %d\n",c[i][j][1],c[i][j][2]);
-                    printf("%d %d\n",c[i][j][1],c[i][j][3]);
-                    printf("%d %d\n",c[i][j][2],c[i][j][3]);
-                    */
-
                     break;
                 case '4':
-                    printf("----\nc(%d,%d) %c\n",i,j,a);
-
-                    for(int k=0; k<4;k++){                        
-                        clausulas.push_back(to_string(c[i][j][k])+" 0");
-                        printf("%d\n",c[i][j][k]);
-                    }
+                    for(int k=0; k<4;k++) clausulas.push_back(to_string(c[i][j][k])+" 0");
                     break;
             }
             // Clausulas tipo 2 (Externas)
@@ -203,11 +157,9 @@ void createVariables(int n, int m){
             }
 
             // Clausulas de tipo 3
-            // Aqui irian r[i][j][i][j] (las reflexivas)
             clausulas.push_back(to_string(r[i][j][i][j])+" 0");
             for (int k = 0; k < n; ++k) {
                 for (int l = 0; l < m; ++l) {
-                    // Aqui irian las internas
                     //Norte - d = 0
                     if (l != 0 ) {
                         clausulas.push_back("-"+to_string(r[i][j][k][l])+" "+to_string(c[k][l][0])+" "+to_string(r[i][j][k][l-1]) +" 0");
@@ -232,7 +184,7 @@ void createVariables(int n, int m){
                 }
             }
 
-            // Celdas interiores alcanzables
+            // Clausulas tipo 4
 
             for (int k = 0; k < n; ++k) {
                 for (int l = 0; l < m; ++l) {
@@ -259,19 +211,16 @@ bool traduceSATFile(int n, int m){
     ifstream infile("salidaCNF.txt");
     string traduccion;
     int i = 0;
-    cout<<"traduccion \n";
     getline(infile, traduccion);
     if (tipo.compare(traduccion)==0) {
         while(getline(infile,traduccion,' ') && i<(n+1)*n+(m+1)*m){
             solucion.push_back(traduccion);
-            cout<<traduccion<<endl;
             i++;
         }
     } else {
-        cout << "No se encontro solucion \n";
+        cout << "No se encontro solucion para el problema planteado. \n";
         return false;
     }               
-    cout<<"TAMANO " << solucion.size()<<endl;
     infile.close();
     return true;
 }
@@ -356,13 +305,12 @@ void createOutputFile(string firstLine, bool sat, int n, int m) {
 int main(int argc, char const *argv[]) {
 
     int n,m; // n-filas,m-columnas
+    int cantidadLineas=1;
     bool resultado;
     
     ifstream infile(argv[1]);  //Lectura pasada a traves de stdin
     string line;
     while (getline(infile, line)) {
-        cout<<"Comienzo de iteracion principal, esta es line: \n";
-        cout<<line<<"\n";
         istringstream ss(line);
         string token;
 
@@ -371,15 +319,16 @@ int main(int argc, char const *argv[]) {
         getline(ss,token,' ');
         m = stoi(token);
 
-        printf("n=%d, m=%d\nRestricciones:\n", n,m);
         while (getline(ss, token,' ')){
             restricciones.push_back(token);
         }
+        cout<<"Se esta procesando la linea "<<cantidadLineas<<" del archivo de entrada. \n";
 
         createVariables(n,m);
 
         createDimacsFile(n,m);
 
+        // Se ejecuta el minisat para que se solucione el problema planteado.
         int status=system("minisat entradaCNF.txt salidaCNF.txt > /dev/null");
         if (status) {
             resultado=traduceSATFile(n,m);
@@ -388,11 +337,12 @@ int main(int argc, char const *argv[]) {
             return EXIT_FAILURE;
         }
 
-        cout<< "Aqui se llama funcion que modifica archivo salida \n";
+        // Aqui se llama funcion que modifica archivo salida que se llama "output.txt"
         createOutputFile(line, resultado, n, m);
         restricciones.clear();
         clausulas.clear();
         solucion.clear();
+        cantidadLineas++;
     }
     return 0;
 }
