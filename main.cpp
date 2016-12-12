@@ -13,8 +13,10 @@ vector<string> solucion;
 void createVariables(int n, int m){
     int c[n][m][4]; //variables de cada recuadro
     int z[n][m];   //celda interior=FALSE, celda exterior=TRUE
+    int r[n][m][n][m]; //Variables que diran la relacion r
     int aux = 1;    //auxiliar para numerar variables
     int contador = 1; //Aumenta de a uno cada valor en z
+    int hiperContador = 0; //Aumenta de a uno cada valor en r
     cout << "\nc(i,j), Variables, ¿celda exterior?" << endl;
 
     for(int i=0; i<n ; i++){
@@ -23,7 +25,13 @@ void createVariables(int n, int m){
             c[i][j][1] = n+aux;        //izquierdo (oeste)
             c[i][j][2] = n+m+1+aux;    //inferior  (sur)
             c[i][j][3] = n+1+aux;      //derecho   (este)
-            z[i][j]= n*(n+1)+m*(m+1)+contador;             
+            z[i][j] = n*(n+1)+m*(m+1)+contador;
+            for (int k = 0; k < n; ++k) {
+                for (int l = 0; l < m; ++l) {
+                    r[i][j][k][l] = n*(n+1)+m*(m+1)+n*m+contador+hiperContador;
+                    hiperContador++;      
+                }
+            }
             printf("c(%d,%d), { %d,%d,%d,%d }, %d\n",i,j,c[i][j][0],c[i][j][1],c[i][j][2],c[i][j][3],z[i][j]);
             aux++;
             contador++;
@@ -32,12 +40,12 @@ void createVariables(int n, int m){
     }
 
     //cout << "\nCLAUSULAS TIPO 1" << endl;
-    char r;
+    char a;
     string f,h;
     for(int i=0; i<n; i++){
         for (int j=0; j<m; j++){
-            r = restricciones[i].at(j);
-            switch(r){
+            a = restricciones[i].at(j);
+            switch(a){
                 case '.':
                     break; 
                 case '0':
@@ -137,7 +145,7 @@ void createVariables(int n, int m){
 
                     break;
                 case '4':
-                    printf("----\nc(%d,%d) %c\n",i,j,r);
+                    printf("----\nc(%d,%d) %c\n",i,j,a);
 
                     for(int k=0; k<4;k++){                        
                         clausulas.push_back(to_string(c[i][j][k])+" 0");
@@ -192,6 +200,14 @@ void createVariables(int n, int m){
                 clausulas.push_back("-"+to_string(z[i][j])+" "+to_string(c[i][j][0])+" -"+to_string(z[i][j+1]) +" 0");
                 clausulas.push_back("-"+to_string(z[i][j])+" "+to_string(c[i][j][3])+" -"+to_string(z[i+1][j]) +" 0");
                 clausulas.push_back("-"+to_string(z[i][j])+" "+to_string(c[i][j][2])+" -"+to_string(z[i][j-1]) +" 0");
+            }
+
+            // Clausulas de tipo 3
+            // Aqui irian r[i][j][i][j] (las reflexivas)
+            for (int k = 0; k < count; ++k) {
+                for (int l = 0; l < count; ++l) {
+                    // Aqui irian las internas
+                }
             }
         }
     }
